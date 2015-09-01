@@ -1,0 +1,4 @@
+platform :ios, ‘8.0’
+ 
+pod 'ReactiveCocoa', '2.1.8'
+pod 'Foursquare-API-v2', '1.4.8'
