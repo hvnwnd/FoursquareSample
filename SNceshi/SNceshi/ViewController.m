@@ -8,6 +8,7 @@
 
 @import CoreLocation;
 
+#import "Foursquare2.h"
 #import "ViewController.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
@@ -48,8 +49,28 @@
 
     RACSignal *locationSignal = RACObserve(self, location);
 
-    [locationSignal subscribeNext:^(id x) {
-        NSLog(@"%@", x);
+    [locationSignal subscribeNext:^(CLLocation *location) {
+        [Foursquare2 venueSearchNearByLatitude:@(location.coordinate.latitude)
+                                     longitude:@(location.coordinate.longitude)
+                                         query:nil
+                                         limit:nil
+                                        intent:intentCheckin
+                                        radius:@(500)
+                                    categoryId:nil
+                                      callback:^(BOOL success, id result) {
+            if (success) {
+                NSDictionary *dic = result;
+                NSArray *venues = [dic valueForKeyPath:@"response.venues"];
+                NSArray *ids = [venues valueForKey:@"id"];
+                for (NSString *identifier in ids) {
+                    [Foursquare2 venueGetDetail:identifier
+                                       callback:^(BOOL success, id result) {
+                                           NSLog(@"%@", [result valueForKeyPath:@"response.venue.rating"]);
+                                       }];
+
+                }
+            }
+        }];
     }];
     // Do any additional setup after loading the view, typically from a nib.
 }
