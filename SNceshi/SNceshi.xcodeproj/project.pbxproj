@@ -14,6 +14,9 @@
 		184F493A1B964DB000C6F676 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 184F49391B964DB000C6F676 /* Images.xcassets */; };
 		184F493D1B964DB000C6F676 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 184F493B1B964DB000C6F676 /* LaunchScreen.xib */; };
 		184F49491B964DB000C6F676 /* SNceshiTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F49481B964DB000C6F676 /* SNceshiTests.m */; };
+		747351961B9F013000903DC2 /* SNVenueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 747351951B9F013000903DC2 /* SNVenueCell.m */; };
+		747351981B9F014E00903DC2 /* SNVenueCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 747351971B9F014E00903DC2 /* SNVenueCell.xib */; };
+		7473519D1B9F01DF00903DC2 /* SNVenue.m in Sources */ = {isa = PBXBuildFile; fileRef = 7473519C1B9F01DF00903DC2 /* SNVenue.m */; };
 		DDB8EBEBCCF7EB59E648DA26 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78322822DC12FD56023E158C /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +44,11 @@
 		184F49421B964DB000C6F676 /* SNceshiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SNceshiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		184F49471B964DB000C6F676 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		184F49481B964DB000C6F676 /* SNceshiTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SNceshiTests.m; sourceTree = "<group>"; };
+		747351941B9F013000903DC2 /* SNVenueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNVenueCell.h; sourceTree = "<group>"; };
+		747351951B9F013000903DC2 /* SNVenueCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNVenueCell.m; sourceTree = "<group>"; };
+		747351971B9F014E00903DC2 /* SNVenueCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SNVenueCell.xib; sourceTree = "<group>"; };
+		7473519B1B9F01DF00903DC2 /* SNVenue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNVenue.h; sourceTree = "<group>"; };
+		7473519C1B9F01DF00903DC2 /* SNVenue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNVenue.m; sourceTree = "<group>"; };
 		78322822DC12FD56023E158C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96B80768540EBD7EC3A1873F /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		F5EBE017B11A43EA31861CA5 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -96,6 +104,11 @@
 				184F49391B964DB000C6F676 /* Images.xcassets */,
 				184F493B1B964DB000C6F676 /* LaunchScreen.xib */,
 				184F492C1B964DB000C6F676 /* Supporting Files */,
+				747351941B9F013000903DC2 /* SNVenueCell.h */,
+				747351951B9F013000903DC2 /* SNVenueCell.m */,
+				747351971B9F014E00903DC2 /* SNVenueCell.xib */,
+				7473519B1B9F01DF00903DC2 /* SNVenue.h */,
+				7473519C1B9F01DF00903DC2 /* SNVenue.m */,
 			);
 			path = SNceshi;
 			sourceTree = "<group>";
@@ -225,6 +238,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				747351981B9F014E00903DC2 /* SNVenueCell.xib in Resources */,
 				184F49381B964DB000C6F676 /* Main.storyboard in Resources */,
 				184F493D1B964DB000C6F676 /* LaunchScreen.xib in Resources */,
 				184F493A1B964DB000C6F676 /* Images.xcassets in Resources */,
@@ -278,8 +292,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				747351961B9F013000903DC2 /* SNVenueCell.m in Sources */,
 				184F49351B964DB000C6F676 /* ViewController.m in Sources */,
 				184F49321B964DB000C6F676 /* AppDelegate.m in Sources */,
+				7473519D1B9F01DF00903DC2 /* SNVenue.m in Sources */,
 				184F492F1B964DB000C6F676 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -13,9 +13,11 @@
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
 @interface ViewController () <CLLocationManagerDelegate>
+
+@property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic) CLLocationManager *locationManager;
 @property (nonatomic) CLLocation *location;
-
+@property (nonatomic) NSArray    *venues;
 @end
 
 @implementation ViewController
@@ -27,6 +29,8 @@
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
     self.locationManager.delegate = self;
+
+    [self.tableView registerNib:[UINib nibWithNibName:@"SNVenueCell" bundle:nil] forCellReuseIdentifier:@"VenueCell"];
 
     if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
@@ -62,12 +66,12 @@
                 NSDictionary *dic = result;
                 NSArray *venues = [dic valueForKeyPath:@"response.venues"];
                 NSArray *ids = [venues valueForKey:@"id"];
+
                 for (NSString *identifier in ids) {
                     [Foursquare2 venueGetDetail:identifier
                                        callback:^(BOOL success, id result) {
-                                           NSLog(@"%@", [result valueForKeyPath:@"response.venue.rating"]);
-                                       }];
-
+                        NSLog(@"%@", [result valueForKeyPath:@"response.venue.rating"]);
+                    }];
                 }
             }
         }];
@@ -80,6 +84,27 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - Table view data source
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.venues.count;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return self.venues.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *cellIdentifier = @"VenueCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    return cell;
+}
+
+#pragma mark - CoreLocation Delegate
 
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
