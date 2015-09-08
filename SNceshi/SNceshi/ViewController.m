@@ -11,6 +11,8 @@
 #import "Foursquare2.h"
 #import "ViewController.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import "SNVenueCell.h"
+#import "SNVenue.h"
 
 @interface ViewController () <CLLocationManagerDelegate>
 
@@ -65,14 +67,26 @@
             if (success) {
                 NSDictionary *dic = result;
                 NSArray *venues = [dic valueForKeyPath:@"response.venues"];
-                NSArray *ids = [venues valueForKey:@"id"];
-
-                for (NSString *identifier in ids) {
-                    [Foursquare2 venueGetDetail:identifier
+                NSMutableArray *tmpArray = [NSMutableArray array];
+                for (NSDictionary *dict in venues) {
+                    SNVenue *venue = [SNVenue new];
+                    venue.venueId = dict[@"id"];
+                    venue.name = dict[@"name"];
+                    [tmpArray addObject:venue];
+                    
+                    [Foursquare2 venueGetDetail:venue.venueId
                                        callback:^(BOOL success, id result) {
-                        NSLog(@"%@", [result valueForKeyPath:@"response.venue.rating"]);
-                    }];
+                                           venue.rating = [[result valueForKeyPath:@"response.venue.rating"] floatValue];
+                                           if (venue.rating > 0)
+                                           {
+                                               NSLog(@"%@ %f", venue.name, venue.rating);
+                                           }
+                                           [self.tableView reloadData];
+                                       }];
+
                 }
+                self.venues = tmpArray;
+                [self.tableView reloadData];
             }
         }];
     }];
@@ -100,7 +114,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIdentifier = @"VenueCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    SNVenueCell *cell = (SNVenueCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    SNVenue *venue = self.venues[indexPath.row];
+    cell.titleLabel.text = venue.name;
+    [cell setRating:venue.rating];
     return cell;
 }
 
@@ -113,6 +130,8 @@
     if (newLocation != nil) {
         self.location = newLocation;
     }
+    [self.locationManager stopUpdatingLocation];
+
 }
 
 - (void)locationManager:(CLLocationManager *)manager

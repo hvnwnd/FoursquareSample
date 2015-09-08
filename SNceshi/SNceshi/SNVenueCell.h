@@ -12,6 +12,9 @@
 @interface SNVenueCell : UITableViewCell
 
 @property (nonatomic, weak) IBOutlet UILabel *titleLabel;
-@property (nonatomic, weak) EDStarRating     *ratingControl;
+@property (nonatomic, weak) IBOutlet UILabel *ratingNumber;
+
+@property (nonatomic, weak) IBOutlet EDStarRating     *ratingControl;
+- (void)setRating:(float)rating;
 
 @end

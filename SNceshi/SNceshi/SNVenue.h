@@ -12,5 +12,6 @@
 
 @property (nonatomic) NSString *name;
 @property (nonatomic) NSString *venueId;
+@property (nonatomic) float rating;
 
 @end
