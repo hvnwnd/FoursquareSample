@@ -1,16 +1,18 @@
 //
-//  SNVenueCell.m
-//  SNceshi
+// SNVenueCell.m
+// SNceshi
 //
-//  Created by CHEN Bin on 08/09/15.
-//  Copyright (c) 2015 Fantestech. All rights reserved.
+// Created by CHEN Bin on 08/09/15.
+// Copyright (c) 2015 Fantestech. All rights reserved.
 //
 
 #import "SNVenueCell.h"
+#import <ReactiveCocoa/ReactiveCocoa.h>
 
 @implementation SNVenueCell
 
-- (void)awakeFromNib{
+- (void)awakeFromNib
+{
     self.ratingControl.maxRating = 5.0;
     self.ratingControl.starImage = [UIImage imageNamed:@"star"];
     self.ratingControl.starHighlightedImage = [UIImage imageNamed:@"starhighlighted"];
@@ -18,15 +20,18 @@
 
 - (void)setRating:(float)rating
 {
-    if (rating > 0){
-        self.ratingControl.rating = rating/2.0;
-        self.ratingNumber.text = [NSString stringWithFormat:@"%.1f", rating];
-        self.ratingControl.hidden=  NO;
-    }else{
+// RAC(self.ratingControl, hidden) = [RACObserve(self, test);
+// [RACObserve(self.ratingControl, @"hidden") subscribeNext:] = [RAC(rating)
+////    self.ratingControl;
+//
+    if (rating > 0) {
+        self.ratingControl.rating = rating / 2.0;
+        self.ratingNumber.text    = [NSString stringWithFormat:@"%.1f", rating];
+        self.ratingControl.hidden = NO;
+    } else {
         self.ratingControl.hidden = YES;
-        self.ratingNumber.hidden = NO;
+        self.ratingNumber.hidden  = NO;
     }
-
 }
 
 @end

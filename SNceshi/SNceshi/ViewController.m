@@ -9,10 +9,10 @@
 @import CoreLocation;
 
 #import "Foursquare2.h"
+#import "SNVenue.h"
+#import "SNVenueCell.h"
 #import "ViewController.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import "SNVenueCell.h"
-#import "SNVenue.h"
 
 @interface ViewController () <CLLocationManagerDelegate>
 
@@ -53,9 +53,51 @@
         }
     }
 
-    RACSignal *locationSignal = RACObserve(self, location);
+// RACSignal *venueReadySignal = [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+//
+// }]
+// RACSignal *reloadSignal = [RACSignal combineLatest:(id<NSFastEnumeration>) reduce:<#^id(void)reduceBlock#>]
+    [RACObserve(self, venues) subscribeNext:^(id x) {
+        [self.tableView reloadData];
 
-    [locationSignal subscribeNext:^(CLLocation *location) {
+        RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id < RACSubscriber > subscriber) {
+            __block NSUInteger count = 0;
+
+            for (SNVenue *venue in self.venues) {
+                [Foursquare2 venueGetDetail:venue.venueId
+                                   callback:^(BOOL success, id result) {
+                    count++;
+                    float rating = [[result valueForKeyPath:@"response.venue.rating"] floatValue];
+
+                    if (rating > 0) {
+                        venue.rating = rating;
+                    }
+
+                    if (count == self.venues.count) {
+                        [subscriber sendNext:venue];
+                        [subscriber sendCompleted];
+                    }
+                }];
+            }
+            return nil;
+        }];
+
+        [signal subscribeNext:^(id x) {
+            [self.tableView reloadData];
+        }];
+    }];
+
+
+// [[RACSignal combineLatest:(signals.count > 0) ? [signals subarrayWithRange:NSMakeRange(0, 14)] : signals reduce:^id (SNVenue *venue) {
+// NSLog(@"%f", venue.rating);
+// return @(venue.rating > 0);
+// }] subscribeNext:^(id x) {
+// NSLog(@"hehe %@", x);
+// [self.tableView reloadData];
+// }];
+// }];
+
+    [RACObserve(self, location) subscribeNext:^(CLLocation *location) {
         [Foursquare2 venueSearchNearByLatitude:@(location.coordinate.latitude)
                                      longitude:@(location.coordinate.longitude)
                                          query:nil
@@ -68,29 +110,28 @@
                 NSDictionary *dic = result;
                 NSArray *venues = [dic valueForKeyPath:@"response.venues"];
                 NSMutableArray *tmpArray = [NSMutableArray array];
+
                 for (NSDictionary *dict in venues) {
                     SNVenue *venue = [SNVenue new];
                     venue.venueId = dict[@"id"];
                     venue.name = dict[@"name"];
                     [tmpArray addObject:venue];
-                    
-                    [Foursquare2 venueGetDetail:venue.venueId
-                                       callback:^(BOOL success, id result) {
-                                           venue.rating = [[result valueForKeyPath:@"response.venue.rating"] floatValue];
-                                           if (venue.rating > 0)
-                                           {
-                                               NSLog(@"%@ %f", venue.name, venue.rating);
-                                           }
-                                           [self.tableView reloadData];
-                                       }];
 
+
+// [Foursquare2 venueGetDetail:venue.venueId
+// callback:^(BOOL success, id result) {
+// venue.rating = [[result valueForKeyPath:@"response.venue.rating"] floatValue];
+//
+// if (venue.rating > 0) {
+// NSLog(@"%@ %f", venue.name, venue.rating);
+// [self.tableView reloadData];
+// }
+// }];
                 }
                 self.venues = tmpArray;
-                [self.tableView reloadData];
             }
         }];
     }];
-    // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)didReceiveMemoryWarning
@@ -114,7 +155,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIdentifier = @"VenueCell";
-    SNVenueCell *cell = (SNVenueCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    SNVenueCell     *cell = (SNVenueCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     SNVenue *venue = self.venues[indexPath.row];
     cell.titleLabel.text = venue.name;
     [cell setRating:venue.rating];
@@ -131,7 +172,6 @@
         self.location = newLocation;
     }
     [self.locationManager stopUpdatingLocation];
-
 }
 
 - (void)locationManager:(CLLocationManager *)manager
