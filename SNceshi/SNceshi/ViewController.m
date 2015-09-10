@@ -31,12 +31,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.tableView registerNib:[UINib nibWithNibName:@"SNVenueCell" bundle:nil] forCellReuseIdentifier:@"VenueCell"];
 
+    [self initLocationManager];
+    [self observeUpdateVenues];
+    [self observeUpdateRatings];
+}
+
+- (void)initLocationManager
+{
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     self.locationManager.delegate = self;
-
-    [self.tableView registerNib:[UINib nibWithNibName:@"SNVenueCell" bundle:nil] forCellReuseIdentifier:@"VenueCell"];
 
     if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
@@ -56,7 +62,37 @@
             [alertView show];
         }
     }
+}
 
+- (void)observeUpdateVenues
+{
+    [RACObserve(self, location) subscribeNext:^(CLLocation *location) {
+        [Foursquare2 venueSearchNearByLatitude:@(location.coordinate.latitude)
+                                     longitude:@(location.coordinate.longitude)
+                                         query:nil
+                                         limit:nil
+                                        intent:intentCheckin
+                                        radius:@(500)
+                                    categoryId:nil
+                                      callback:^(BOOL success, id result) {
+            if (success) {
+                NSLog(@"%@", location);
+                NSDictionary *dic = result;
+                NSArray *venues = [dic valueForKeyPath:@"response.venues"];
+
+                self.venues = [venues map:^id (id obj, int index) {
+                    SNVenue *venue = [SNVenue new];
+                    venue.venueId = obj[@"id"];
+                    venue.name = obj[@"name"];
+                    return venue;
+                }];
+            }
+        }];
+    }];
+}
+
+- (void)observeUpdateRatings
+{
     [RACObserve(self, venues) subscribeNext:^(NSArray *venues) {
         NSLog(@"refresh venue %ld", (long)[venues count]);
         [self.tableView reloadData];
@@ -88,30 +124,6 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
             });
-        }];
-    }];
-
-    [RACObserve(self, location) subscribeNext:^(CLLocation *location) {
-        [Foursquare2 venueSearchNearByLatitude:@(location.coordinate.latitude)
-                                     longitude:@(location.coordinate.longitude)
-                                         query:nil
-                                         limit:nil
-                                        intent:intentCheckin
-                                        radius:@(500)
-                                    categoryId:nil
-                                      callback:^(BOOL success, id result) {
-            if (success) {
-                NSLog(@"%@", location);
-                NSDictionary *dic = result;
-                NSArray *venues = [dic valueForKeyPath:@"response.venues"];
-
-                self.venues = [venues map:^id (id obj, int index) {
-                    SNVenue *venue = [SNVenue new];
-                    venue.venueId = obj[@"id"];
-                    venue.name = obj[@"name"];
-                    return venue;
-                }];
-            }
         }];
     }];
 }
@@ -160,7 +172,6 @@
        didFailWithError:(NSError *)error
 {
     NSLog(@"Location manager did fail with error %@", error);
-    [self.locationManager stopUpdatingLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status

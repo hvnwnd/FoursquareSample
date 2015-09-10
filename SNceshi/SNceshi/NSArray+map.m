@@ -18,7 +18,6 @@
         [temp addObject:closure(self[i], i)];
     }
 
-
     return [temp copy];
 }
 
