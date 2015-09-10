@@ -42,7 +42,7 @@
 		184F49331B964DB000C6F676 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		184F49341B964DB000C6F676 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		184F49371B964DB000C6F676 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		184F49391B964DB000C6F676 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		184F49391B964DB000C6F676 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = SNceshi/Images.xcassets; sourceTree = "<group>"; };
 		184F493C1B964DB000C6F676 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		184F49421B964DB000C6F676 /* SNceshiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SNceshiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		184F49471B964DB000C6F676 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -86,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				184F492B1B964DB000C6F676 /* SNceshi */,
+				184F49391B964DB000C6F676 /* Images.xcassets */,
 				184F49451B964DB000C6F676 /* SNceshiTests */,
 				184F492A1B964DB000C6F676 /* Products */,
 				38634BBD11F0D8B13FB8DAD2 /* Pods */,
@@ -105,24 +106,15 @@
 		184F492B1B964DB000C6F676 /* SNceshi */ = {
 			isa = PBXGroup;
 			children = (
-				747351A11B9F060300903DC2 /* ThirdParty */,
 				184F49301B964DB000C6F676 /* AppDelegate.h */,
 				184F49311B964DB000C6F676 /* AppDelegate.m */,
-				184F49331B964DB000C6F676 /* ViewController.h */,
-				184F49341B964DB000C6F676 /* ViewController.m */,
-				184F49361B964DB000C6F676 /* Main.storyboard */,
-				184F49391B964DB000C6F676 /* Images.xcassets */,
 				184F493B1B964DB000C6F676 /* LaunchScreen.xib */,
+				746CA7831BA1859B002EFE39 /* View */,
 				184F492C1B964DB000C6F676 /* Supporting Files */,
-				747351941B9F013000903DC2 /* SNVenueCell.h */,
-				747351951B9F013000903DC2 /* SNVenueCell.m */,
-				747351971B9F014E00903DC2 /* SNVenueCell.xib */,
-				7473519B1B9F01DF00903DC2 /* SNVenue.h */,
-				7473519C1B9F01DF00903DC2 /* SNVenue.m */,
-				74F5D0B51BA085B700D7D106 /* SNVenueViewModel.h */,
-				74F5D0B61BA085B700D7D106 /* SNVenueViewModel.m */,
-				74F5D0B81BA08F3E00D7D106 /* NSArray+map.h */,
-				74F5D0B91BA08F3E00D7D106 /* NSArray+map.m */,
+				746CA7821BA18588002EFE39 /* Model */,
+				746CA7811BA18580002EFE39 /* ViewModel */,
+				746CA7801BA18574002EFE39 /* Helper */,
+				747351A11B9F060300903DC2 /* ThirdParty */,
 			);
 			path = SNceshi;
 			sourceTree = "<group>";
@@ -160,6 +152,46 @@
 				F5EBE017B11A43EA31861CA5 /* Pods.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		746CA7801BA18574002EFE39 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				74F5D0B81BA08F3E00D7D106 /* NSArray+map.h */,
+				74F5D0B91BA08F3E00D7D106 /* NSArray+map.m */,
+			);
+			name = Helper;
+			sourceTree = "<group>";
+		};
+		746CA7811BA18580002EFE39 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				74F5D0B51BA085B700D7D106 /* SNVenueViewModel.h */,
+				74F5D0B61BA085B700D7D106 /* SNVenueViewModel.m */,
+			);
+			name = ViewModel;
+			sourceTree = "<group>";
+		};
+		746CA7821BA18588002EFE39 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7473519B1B9F01DF00903DC2 /* SNVenue.h */,
+				7473519C1B9F01DF00903DC2 /* SNVenue.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		746CA7831BA1859B002EFE39 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				184F49331B964DB000C6F676 /* ViewController.h */,
+				184F49341B964DB000C6F676 /* ViewController.m */,
+				184F49361B964DB000C6F676 /* Main.storyboard */,
+				747351941B9F013000903DC2 /* SNVenueCell.h */,
+				747351951B9F013000903DC2 /* SNVenueCell.m */,
+				747351971B9F014E00903DC2 /* SNVenueCell.xib */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 		747351A11B9F060300903DC2 /* ThirdParty */ = {
