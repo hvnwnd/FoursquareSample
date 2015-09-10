@@ -9,10 +9,14 @@
 @import CoreLocation;
 
 #import "Foursquare2.h"
+#import "NSArray+map.h"
 #import "SNVenue.h"
 #import "SNVenueCell.h"
+#import "SNVenueViewModel.h"
 #import "ViewController.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
+
+#define MIN_DISTANCE 20
 
 @interface ViewController () <CLLocationManagerDelegate>
 
@@ -29,7 +33,7 @@
     [super viewDidLoad];
 
     self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     self.locationManager.delegate = self;
 
     [self.tableView registerNib:[UINib nibWithNibName:@"SNVenueCell" bundle:nil] forCellReuseIdentifier:@"VenueCell"];
@@ -53,11 +57,8 @@
         }
     }
 
-// RACSignal *venueReadySignal = [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-//
-// }]
-// RACSignal *reloadSignal = [RACSignal combineLatest:(id<NSFastEnumeration>) reduce:<#^id(void)reduceBlock#>]
-    [RACObserve(self, venues) subscribeNext:^(id x) {
+    [RACObserve(self, venues) subscribeNext:^(NSArray *venues) {
+        NSLog(@"refresh venue %ld", (long)[venues count]);
         [self.tableView reloadData];
 
         RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id < RACSubscriber > subscriber) {
@@ -83,19 +84,12 @@
         }];
 
         [signal subscribeNext:^(id x) {
-            [self.tableView reloadData];
+            NSLog(@"refresh ratings");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
         }];
     }];
-
-
-// [[RACSignal combineLatest:(signals.count > 0) ? [signals subarrayWithRange:NSMakeRange(0, 14)] : signals reduce:^id (SNVenue *venue) {
-// NSLog(@"%f", venue.rating);
-// return @(venue.rating > 0);
-// }] subscribeNext:^(id x) {
-// NSLog(@"hehe %@", x);
-// [self.tableView reloadData];
-// }];
-// }];
 
     [RACObserve(self, location) subscribeNext:^(CLLocation *location) {
         [Foursquare2 venueSearchNearByLatitude:@(location.coordinate.latitude)
@@ -107,28 +101,16 @@
                                     categoryId:nil
                                       callback:^(BOOL success, id result) {
             if (success) {
+                NSLog(@"%@", location);
                 NSDictionary *dic = result;
                 NSArray *venues = [dic valueForKeyPath:@"response.venues"];
-                NSMutableArray *tmpArray = [NSMutableArray array];
 
-                for (NSDictionary *dict in venues) {
+                self.venues = [venues map:^id (id obj, int index) {
                     SNVenue *venue = [SNVenue new];
-                    venue.venueId = dict[@"id"];
-                    venue.name = dict[@"name"];
-                    [tmpArray addObject:venue];
-
-
-// [Foursquare2 venueGetDetail:venue.venueId
-// callback:^(BOOL success, id result) {
-// venue.rating = [[result valueForKeyPath:@"response.venue.rating"] floatValue];
-//
-// if (venue.rating > 0) {
-// NSLog(@"%@ %f", venue.name, venue.rating);
-// [self.tableView reloadData];
-// }
-// }];
-                }
-                self.venues = tmpArray;
+                    venue.venueId = obj[@"id"];
+                    venue.name = obj[@"name"];
+                    return venue;
+                }];
             }
         }];
     }];
@@ -157,8 +139,9 @@
     static NSString *cellIdentifier = @"VenueCell";
     SNVenueCell     *cell = (SNVenueCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     SNVenue *venue = self.venues[indexPath.row];
-    cell.titleLabel.text = venue.name;
-    [cell setRating:venue.rating];
+    SNVenueViewModel *viewModel     = [[SNVenueViewModel alloc] initWithVenue:venue];
+    cell.viewModel = viewModel;
+
     return cell;
 }
 
@@ -168,10 +151,9 @@
     didUpdateToLocation:(CLLocation *)newLocation
            fromLocation:(CLLocation *)oldLocation
 {
-    if (newLocation != nil) {
+    if (newLocation != nil && ((oldLocation == nil || [newLocation distanceFromLocation:oldLocation] > MIN_DISTANCE))) {
         self.location = newLocation;
     }
-    [self.locationManager stopUpdatingLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager

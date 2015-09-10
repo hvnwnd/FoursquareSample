@@ -9,13 +9,9 @@
 #import "EDStarRating.h"
 #import <UIKit/UIKit.h>
 
+@class SNVenueViewModel;
 @interface SNVenueCell : UITableViewCell
 
-@property (nonatomic, weak) IBOutlet UILabel *titleLabel;
-@property (nonatomic, weak) IBOutlet UILabel *ratingNumber;
-
-@property (nonatomic, weak) IBOutlet EDStarRating *ratingControl;
-
-- (void)setRating:(float)rating;
+@property (nonatomic) SNVenueViewModel *viewModel;
 
 @end

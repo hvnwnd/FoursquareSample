@@ -7,8 +7,16 @@
 //
 
 #import "SNVenueCell.h"
+#import "SNVenueViewModel.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
+@interface SNVenueCell ()
+@property (nonatomic, weak) IBOutlet UILabel *titleLabel;
+@property (nonatomic, weak) IBOutlet UILabel *ratingNumber;
+
+@property (nonatomic, weak) IBOutlet EDStarRating *ratingControl;
+
+@end
 @implementation SNVenueCell
 
 - (void)awakeFromNib
@@ -18,20 +26,13 @@
     self.ratingControl.starHighlightedImage = [UIImage imageNamed:@"starhighlighted"];
 }
 
-- (void)setRating:(float)rating
+- (void)setViewModel:(SNVenueViewModel *)viewModel
 {
-// RAC(self.ratingControl, hidden) = [RACObserve(self, test);
-// [RACObserve(self.ratingControl, @"hidden") subscribeNext:] = [RAC(rating)
-////    self.ratingControl;
-//
-    if (rating > 0) {
-        self.ratingControl.rating = rating / 2.0;
-        self.ratingNumber.text    = [NSString stringWithFormat:@"%.1f", rating];
-        self.ratingControl.hidden = NO;
-    } else {
-        self.ratingControl.hidden = YES;
-        self.ratingNumber.hidden  = NO;
-    }
+    self.titleLabel.text      = viewModel.name;
+    self.ratingNumber.text    = viewModel.ratingNumber;
+    self.ratingControl.rating = viewModel.rating;
+    self.ratingControl.hidden = !viewModel.showRating;
+    self.ratingNumber.hidden  = !viewModel.showRating;
 }
 
 @end
